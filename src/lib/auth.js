@@ -11,6 +11,14 @@ export const auth = betterAuth({
     emailAndPassword: {
         enabled: true,
         requireEmailVerification: true,
+        sendResetPassword: async ({ user, url, token }, request) => {
+            void resend.emails.send({
+                from: 'Acme <onboarding@resend.dev>',
+                to: user.email,
+                subject: "Reset your password",
+                text: `Click the link to reset your password: ${url}`,
+            });
+        },
     },
     socialProviders: {
         google: {
@@ -27,9 +35,9 @@ export const auth = betterAuth({
                 html: `<p>Click the link to verify your email: ${url}</p>`
             });
         },
-        sendOnSignUp:true,
-        autoSignInAfterVerification:true,
-        expiresIn: 60*5
+        sendOnSignUp: true,
+        autoSignInAfterVerification: true,
+        expiresIn: 60 * 5
     },
     database: mongodbAdapter(db, {
         client
